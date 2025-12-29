@@ -14,12 +14,14 @@ export const Signup = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         });
-
+        setEmail(""),setPassword("")
+        
         if (resp.ok) {
             alert("Usuario creado");
         } else {
             alert("Error en registro");
         }
+        
     };
 
     return (

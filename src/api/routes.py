@@ -6,6 +6,7 @@ from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
 
 api = Blueprint('api', __name__)
 
@@ -36,9 +37,9 @@ def add_User():
     
     new_user = User(
         email = email,
-        password = password,
         is_active = True
     )
+    new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -51,14 +52,13 @@ def access_User():
     password = request.json.get("password", None)
 
     # Consulta la base de datos por el nombre de usuario y la contraseña
-    user = User.query.filter_by(email=email, password=password).first()
+    user = User.query.filter_by(email=email).first()
 
-    if user is None:
-        # el usuario no se encontró en la base de datos
+    if not user or not user.check_password(password):
         return jsonify({"msg": "Bad email or password"}), 401
     
     # Crea un nuevo token con el id de usuario dentro
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     return jsonify({ "token": access_token, "user_id": user.id })
 
 @api.route('/private' , methods=['GET'])

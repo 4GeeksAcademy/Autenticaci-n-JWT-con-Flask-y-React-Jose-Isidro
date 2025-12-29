@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
@@ -17,3 +18,10 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    #creacion del hash de password
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    #chequeo del hash de password
+    def check_password(self, password):
+        return check_password_hash(self.password, password)    
