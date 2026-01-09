@@ -9,7 +9,7 @@ export const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const resp = await fetch("https://ubiquitous-space-sniffle-5g9w7wrxvqqv3vvxp-3001.app.github.dev/api/signup", {
+        const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
